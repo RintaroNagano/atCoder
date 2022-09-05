@@ -54,6 +54,7 @@ func binarySearch(array []int, target int) int {
 	})
 	return i
 }
+
 func main() {
 	fp := os.Stdin
 	wfp := os.Stdout

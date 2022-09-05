@@ -54,6 +54,7 @@ func binarySearch(array []int, target int) int {
 	})
 	return i
 }
+
 func main() {
 	fp := os.Stdin
 	wfp := os.Stdout
@@ -64,4 +65,29 @@ func main() {
 	solve()
 }
 func solve() {
+	n := fastio.GetNextInt()
+	m := fastio.GetNextInt()
+	a := make([]int, n)
+	for i := 0; i < n; i++ {
+		a[i] = fastio.GetNextInt()
+	}
+	cs := make([]int, n+1)
+	cs[0] = 0
+	for i := 1; i < n+1; i++ {
+		cs[i] = cs[i-1] + a[i-1]
+	}
+
+	sum := 0
+	for i := 0; i < m; i++ {
+		sum += (i + 1) * a[i]
+	}
+
+	maxVal := sum
+	nextSum := sum
+	for i := 0; i < n-m; i++ {
+		nextSum = nextSum - (cs[i+m] - cs[i]) + m*a[i+m]
+		maxVal = max(maxVal, nextSum)
+	}
+
+	fastio.Println(maxVal)
 }

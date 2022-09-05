@@ -54,6 +54,7 @@ func binarySearch(array []int, target int) int {
 	})
 	return i
 }
+
 func main() {
 	fp := os.Stdin
 	wfp := os.Stdout
@@ -64,4 +65,53 @@ func main() {
 	solve()
 }
 func solve() {
+	s := fastio.Text()
+	s = " " + s
+	one := "1"[0]
+	row := make([]bool, 7)
+	if s[1] == one {
+		fastio.Println("No")
+		return
+	}
+	if s[7] == one {
+		row[0] = true
+	}
+	if s[4] == one {
+		row[1] = true
+	}
+	if s[8] == one || s[2] == one {
+		row[2] = true
+	}
+	if s[5] == one {
+		row[3] = true
+	}
+	if s[9] == one || s[3] == one {
+		row[4] = true
+	}
+	if s[6] == one {
+		row[5] = true
+	}
+	if s[10] == one {
+		row[6] = true
+	}
+
+	flag1 := false
+	flag2 := false
+	for i := 0; i < 7; i++ {
+		if row[i] == true && !flag1 {
+			flag1 = true
+			continue
+		}
+		if row[i] == false && flag1 && !flag2 {
+			flag2 = true
+			continue
+		}
+		if row[i] && flag1 && flag2 {
+			// fastio.Println(row)
+			// fastio.Println(flag1, flag2)
+			fastio.Println("Yes")
+			return
+		}
+	}
+	fastio.Println("No")
 }

@@ -54,6 +54,7 @@ func binarySearch(array []int, target int) int {
 	})
 	return i
 }
+
 func main() {
 	fp := os.Stdin
 	wfp := os.Stdout
@@ -64,4 +65,15 @@ func main() {
 	solve()
 }
 func solve() {
+	s := fastio.Text()
+	pat := []string{"Monday", "Tuesday", "Wednesday", "Thursday", "Friday"}
+	var num int
+
+	for i := 0; i < 5; i++ {
+		if s == pat[i] {
+			num = 5 - i
+		}
+	}
+
+	fastio.Println(num)
 }
