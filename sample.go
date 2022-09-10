@@ -38,11 +38,19 @@ func (i *FastIo) GetNextFloat64() float64           { return i.Atof64(i.Text()) 
 func (i *FastIo) Print(x ...interface{})            { fmt.Fprint(i.Writer, x...) }
 func (i *FastIo) Printf(s string, x ...interface{}) { fmt.Fprintf(i.Writer, s, x...) }
 func (i *FastIo) Println(x ...interface{})          { fmt.Fprintln(i.Writer, x...) }
+
 func max(x int, y int) int {
 	if x > y {
 		return x
 	}
 	return y
+}
+
+func mod(m int, n int) int {
+	if m < 0 {
+		return m%n + n
+	}
+	return m % n
 }
 
 // 配列の中で引数のint型の値と同じ数を持つ要素のインデックスが帰ってくる．
