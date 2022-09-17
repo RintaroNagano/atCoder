@@ -6,7 +6,6 @@ import (
 	"io"
 	"os"
 	"strconv"
-	"strings"
 )
 
 var fastio *FastIo
@@ -47,34 +46,48 @@ func main() {
 	}()
 	solve()
 }
-
-var h int
-var w int
-
 func solve() {
-	// uketori
-	h = fastio.GetNextInt()
-	w = fastio.GetNextInt()
-	cs := make([][]string, h+1)
+	var grid [501][501]string
+	h := fastio.GetNextInt()
+	w := fastio.GetNextInt()
 
 	for i := 1; i <= h; i++ {
-		str := "a" + fastio.Text()
-		cs[i] = strings.Split(str, "")
+		str := fastio.Text()
+		for j := 1; j <= w; j++ {
+			grid[i][j] = str[j-1 : j]
+		}
 	}
-	visitedPos := make([][]bool, 1000, 1000)
-	for i := 0; i < len(visitedPos); i++ {
-		visitedPos[i] = make([]bool, 1000)
-	}
+
 	i := 1
 	j := 1
+	m := map[string][2]int{
+		"U": {-1, 0},
+		"D": {1, 0},
+		"L": {0, -1},
+		"R": {0, 1},
+	}
+	var visited [501][501]bool
 	for {
-		visitedPos[i][j] = true
-		c := cs[i][j]
-		canMove := move(c, &i, &j)
-		if !canMove {
+		visited[i][j] = true
+		i += m[grid[i][j]][0]
+		j += m[grid[i][j]][1]
+		if i < 1 {
+			i++
 			break
 		}
-		if visitedPos[i][j] {
+		if i > h {
+			i--
+			break
+		}
+		if j < 1 {
+			j++
+			break
+		}
+		if j > w {
+			j--
+			break
+		}
+		if visited[i][j] {
 			fastio.Println("-1")
 			return
 		}
@@ -82,41 +95,5 @@ func solve() {
 	fastio.Println(i, j)
 }
 
-func move(c string, i *int, j *int) bool {
-	switch c {
-	case "U":
-		if *i != 1 {
-			*i -= 1
-			return true
-		} else {
-			return false
-		}
-	case "D":
-		if *i != h {
-			*i += 1
-			return true
-		} else {
-			return false
-		}
-
-	case "L":
-		if *j != 1 {
-			*j -= 1
-			return true
-		} else {
-			return false
-		}
-
-	case "R":
-		if *j != w {
-			*j += 1
-			return true
-		} else {
-			return false
-		}
-
-	default:
-		panic("panic: unexpected charactor")
-
-	}
-}
+// 10:07
+// 10:45

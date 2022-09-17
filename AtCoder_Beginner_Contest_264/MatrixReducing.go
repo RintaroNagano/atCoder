@@ -64,29 +64,62 @@ func main() {
 	solve()
 }
 func solve() {
-	i := fastio.GetNextInt()
-	j := fastio.GetNextInt()
-
-	var grid, grid2 [16][16]int
-	for i := 1; i <= 15; i++ {
-		for j := 1; j <= 15; j++ {
-			grid[i][j] = fastio.GetNextInt()
+	var m1, m2 [11][11]int
+	h1 := fastio.GetNextInt()
+	w1 := fastio.GetNextInt()
+	for i := 1; i <= h1; i++ {
+		for j := 1; j <= w1; j++ {
+			m1[i][j] = fastio.GetNextInt()
 		}
 	}
-	for i := 1; i <= 15; i++ {
-		for j := 1; j <= 15; j++ {
-			grid2[i][j] = fastio.GetNextInt()
+	h2 := fastio.GetNextInt()
+	w2 := fastio.GetNextInt()
+	for i := 1; i <= h2; i++ {
+		for j := 1; j <= w2; j++ {
+			m2[i][j] = fastio.GetNextInt()
 		}
 	}
 
-	// bitsがn個の要素の各パターンを表す
-	for bits := 0; bits < (1 << uint64(i)); bits++ {
-		// bitsの各要素についてのループ
-		for k := 0; k < i; k++ {
-			// bitsのi個目の要素の状態がonかどうかチェック
-			if (bits>>uint64(k))&1 == 1 {
-				// 何かしらの処理
+	// fastio.Println(m1, m2)
+	for bit := 1; bit < (1 << uint64(h1)); bit++ {
+		var rowIndex []int
+		for i := 0; i < h1; i++ {
+			if (bit>>uint64(i))&1 == 1 {
+				rowIndex = append(rowIndex, i+1)
+			}
+		}
+		for bit2 := 1; bit2 < (1 << uint64(w1)); bit2++ {
+			var colIndex []int
+			for i := 0; i < w1; i++ {
+				if (bit2>>uint64(i))&1 == 1 {
+					colIndex = append(colIndex, i+1)
+				}
+			}
+			// fastio.Println(rowIndex, colIndex)
+			if len(rowIndex) != h2 || len(colIndex) != w2 {
+				continue
+			}
+
+			//fastio.Println(rowIndex, colIndex)
+			flag := false
+			for i := 1; i <= h2; i++ {
+				for j := 1; j <= w2; j++ {
+					if m1[rowIndex[i-1]][colIndex[j-1]] != m2[i][j] {
+						flag = true
+					}
+				}
+			}
+
+			if flag {
+				continue
+			} else {
+				fastio.Println("Yes")
+				return
 			}
 		}
 	}
+
+	fastio.Println("No")
 }
+
+// 10:56
