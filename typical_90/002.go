@@ -117,24 +117,29 @@ func bitAllSearch() {
 			// 　　　頻出なので知っておくようにしましょう。
 			if (bits>>uint64(i))&1 == 1 {
 				// 何かしらの処理
-				index = append(index, 1)
-			} else {
-				index = append(index, 0)
+				index = append(index, bits>>uint64(i))
 			}
 		}
-		fastio.Println(index)
 	}
 
 	/*
-		   出力　n = 3
-		    [0 0 0]
-			[1 0 0]
-			[0 1 0]
-			[1 1 0]
-			[0 0 1]
-			[1 0 1]
-			[0 1 1]
-			[1 1 1]
+	   出力　n = 4
+	   []
+	   [0]
+	   [1]
+	   [0 1]
+	   [2]
+	   [0 2]
+	   [1 2]
+	   [0 1 2]
+	   [3]
+	   [0 3]
+	   [1 3]
+	   [0 1 3]
+	   [2 3]
+	   [0 2 3]
+	   [1 2 3]
+	   [0 1 2 3]
 	*/
 }
 
@@ -149,5 +154,43 @@ func main() {
 }
 
 func solve() {
-	bitAllSearch()
+	n := fastio.GetNextInt()
+
+	// bitsがn個の要素の各パターンを表す(全てを選ばないパターンを考慮しないならbit初期値1でいい)
+	for bits := 0; bits < (1 << uint64(n)); bits++ {
+		candidate := ""
+		// bitsの各要素についてのループ
+		// fmt.Println("bits: ", bits)
+		for i := n - 1; i >= 0; i-- {
+			// fmt.Println((bits >> uint64(i)) & 1)
+			// bitsのi個目の要素の状態がonかどうかチェック
+			if bits&(1<<i) == 0 {
+				candidate += "("
+			} else {
+				candidate += ")"
+			}
+		}
+		if judge(candidate) {
+			fastio.Println(candidate)
+		}
+	}
+}
+
+func judge(str string) bool {
+	dep := 0
+	for i := 0; i < len(str); i++ {
+		if str[i] == byte('(') {
+			dep++
+		}
+		if str[i] == byte(')') {
+			dep--
+		}
+		if dep < 0 {
+			return false
+		}
+	}
+	if dep != 0 {
+		return false
+	}
+	return true
 }

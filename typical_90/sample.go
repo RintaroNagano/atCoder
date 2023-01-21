@@ -95,6 +95,49 @@ func binarySearch(array []int, key int) int {
 	return ok
 }
 
+func GetNextNInt(n int) []int {
+	a := make([]int, n)
+	for i := 0; i < n; i++ {
+		a[i] = fastio.GetNextInt()
+	}
+	return a
+}
+
+func bitAllSearch() {
+	n := 3 // 独立な要素数
+
+	// bitsがn個の要素の各パターンを表す(全てを選ばないパターンを考慮しないならbit初期値1でいい)
+	for bits := 0; bits < (1 << uint64(n)); bits++ {
+		// bitsの各要素についてのループ
+		var index []int
+		for i := 0; i < n; i++ {
+			// bitsのi個目の要素の状態がonかどうかチェック
+			// fmt.Println((bits >> uint64(i)) & 1)
+			// メモ : (bits & (1 << i)) = 0 というのは、i の j ビット目（2^j の位）が 0 であるための条件。
+			// 　　　頻出なので知っておくようにしましょう。
+			if (bits>>uint64(i))&1 == 1 {
+				// 何かしらの処理
+				index = append(index, 1)
+			} else {
+				index = append(index, 0)
+			}
+		}
+		fastio.Println(index)
+	}
+
+	/*
+		   出力　n = 3
+		    [0 0 0]
+			[1 0 0]
+			[0 1 0]
+			[1 1 0]
+			[0 0 1]
+			[1 0 1]
+			[0 1 1]
+			[1 1 1]
+	*/
+}
+
 func main() {
 	fp := os.Stdin
 	wfp := os.Stdout
@@ -106,4 +149,5 @@ func main() {
 }
 
 func solve() {
+	bitAllSearch()
 }
