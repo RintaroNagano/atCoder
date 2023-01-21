@@ -70,7 +70,7 @@ func abs64(n int64) int64 {
 
 // indexが条件を満たすかどうか
 func isok(array []int, index int, key int) bool {
-	if key <= array[index] {
+	if array[index] <= key {
 		return true
 	} else {
 		return false
@@ -79,8 +79,8 @@ func isok(array []int, index int, key int) bool {
 
 // 目的の値 target の index を返す (ない場合は -1)
 func binarySearch(array []int, key int) int {
-	ng := -1         //「index = 0」が条件を満たすこともあるので、初期値は -1
-	ok := len(array) // 「index = a.size()-1」が条件を満たさないこともあるので、初期値は a.size()
+	ng := len(array) //「index = 0」が条件を満たすこともあるので、初期値は -1
+	ok := -1         // 「index = a.size()-1」が条件を満たさないこともあるので、初期値は a.size()
 
 	/* ok と ng のどちらが大きいかわからないことを考慮 */
 	for abs(ok-ng) > 1 {
@@ -91,7 +91,7 @@ func binarySearch(array []int, key int) int {
 			ng = mid
 		}
 	}
-	// 現状の実装では条件を満たす値の最小値が返される
+	/* ng は条件を満たさない最大の値、 okは条件を満たす最小の値になっている */
 	return ok
 }
 
@@ -106,4 +106,56 @@ func main() {
 }
 
 func solve() {
+	n := fastio.GetNextInt()
+	l := fastio.GetNextInt64()
+	k := fastio.GetNextInt()
+	a := make([]int64, n)
+	for i := 0; i < n; i++ {
+		a[i] = fastio.GetNextInt64()
+	}
+
+	var crt int64
+	var pre int64
+
+	a = append(a, l)
+
+	proc := func(score int64) bool {
+		pre = 0
+		crt = 0
+		count := 0
+		for i := 0; i < len(a); i++ {
+			crt = a[i] - pre
+			// fmt.Printf("crt: %d (a[i]=%d, pre=%d)\n", crt, a[i], pre)
+			if crt >= score {
+				count++
+				// fmt.Println("crt: ", crt)
+				// fmt.Println("count: ", count)
+				pre = a[i]
+			}
+		}
+
+		if k+1 <= count {
+			// println(true)
+			return true
+		} else {
+			// println(false)
+			return false
+		}
+	}
+
+	var ok int64
+	ok = -1
+	ng := l
+	for abs64(ok-ng) > 1 {
+		mid := (ok + ng) / 2
+		// fmt.Println("mid", mid)
+		if proc(mid) {
+			ok = mid
+			// fmt.Println(true)
+		} else {
+			ng = mid
+			// fmt.Println(false)
+		}
+	}
+	fastio.Println(ok)
 }
