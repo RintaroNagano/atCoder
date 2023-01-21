@@ -26,14 +26,18 @@ func main() {
 	for i := range m {
 		p = append(p, []int{i, 0})
 	}
+	fmt.Println(p)
 	sort.Slice(p, func(i, j int) bool { return p[i][0] > p[j][0] })
+	fmt.Println(p)
 	for i := range p {
 		p[i][1] = i
 	}
+	fmt.Println(p)
 	mm := make(map[int]int)
 	for i := range p {
 		mm[p[i][0]] = p[i][1]
 	}
+	fmt.Println(p)
 	ans := make([]int, n)
 	for i := range a {
 		ans[mm[a[i]]]++
