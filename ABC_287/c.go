@@ -103,14 +103,6 @@ func GetNextNInt(n int) []int {
 	return a
 }
 
-func GetNextNString(n int) []string {
-	s := make([]string, n)
-	for i := 0; i < n; i++ {
-		s[i] = fastio.Text()
-	}
-	return s
-}
-
 func bitAllSearch() {
 	n := 3 // 独立な要素数
 
@@ -157,5 +149,20 @@ func main() {
 }
 
 func solve() {
+	n := fastio.GetNextInt()
+	m := fastio.GetNextInt()
+	ma := make(map[int]int, n-1)
 
+	for i := 0; i < m; i++ {
+		n1 := fastio.GetNextInt()
+		n2 := fastio.GetNextInt()
+
+		if abs(n1-n2) >= 2 {
+			fastio.Println("No")
+			return
+		}
+		if condition {
+
+		}
+	}
 }
