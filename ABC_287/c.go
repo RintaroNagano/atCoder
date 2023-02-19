@@ -6,7 +6,6 @@ import (
 	"io"
 	"os"
 	"strconv"
-	"strings"
 )
 
 var fastio *FastIo
@@ -104,14 +103,6 @@ func GetNextNInt(n int) []int {
 	return a
 }
 
-func GetNextNString(n int) []string {
-	s := make([]string, n)
-	for i := 0; i < n; i++ {
-		s[i] = fastio.Text()
-	}
-	return s
-}
-
 func bitAllSearch() {
 	n := 3 // 独立な要素数
 
@@ -147,23 +138,6 @@ func bitAllSearch() {
 	*/
 }
 
-// Replace character "from" to "to" in argument string.
-// Return replaced string.
-func replace(s string, from string, to string) string {
-	// split string
-	ss := strings.Split(s, "")
-	for i, v := range ss {
-		if v == from {
-			ss[i] = to
-		}
-	}
-	s = ""
-	for _, v := range ss {
-		s = s + v
-	}
-	return s
-}
-
 func main() {
 	fp := os.Stdin
 	wfp := os.Stdout
@@ -175,5 +149,20 @@ func main() {
 }
 
 func solve() {
+	n := fastio.GetNextInt()
+	m := fastio.GetNextInt()
+	ma := make(map[int]int, n-1)
 
+	for i := 0; i < m; i++ {
+		n1 := fastio.GetNextInt()
+		n2 := fastio.GetNextInt()
+
+		if abs(n1-n2) >= 2 {
+			fastio.Println("No")
+			return
+		}
+		if condition {
+
+		}
+	}
 }

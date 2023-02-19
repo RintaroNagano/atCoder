@@ -175,5 +175,7 @@ func main() {
 }
 
 func solve() {
+	n := fastio.GetNextInt()
+	m := fastio.GetNextInt()
 
 }

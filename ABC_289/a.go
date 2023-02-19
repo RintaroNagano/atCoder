@@ -147,23 +147,6 @@ func bitAllSearch() {
 	*/
 }
 
-// Replace character "from" to "to" in argument string.
-// Return replaced string.
-func replace(s string, from string, to string) string {
-	// split string
-	ss := strings.Split(s, "")
-	for i, v := range ss {
-		if v == from {
-			ss[i] = to
-		}
-	}
-	s = ""
-	for _, v := range ss {
-		s = s + v
-	}
-	return s
-}
-
 func main() {
 	fp := os.Stdin
 	wfp := os.Stdout
@@ -175,5 +158,19 @@ func main() {
 }
 
 func solve() {
-
+	s := fastio.Text()
+	ss := strings.Split(s, "")
+	for i, v := range ss {
+		if v == "0" {
+			ss[i] = "1"
+		}
+		if v == "1" {
+			ss[i] = "0"
+		}
+	}
+	s = ""
+	for _, v := range ss {
+		s = s + v
+	}
+	fastio.Println(s)
 }
