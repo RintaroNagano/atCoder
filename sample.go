@@ -46,6 +46,7 @@ func max(x int, y int) int {
 	return y
 }
 
+// 割られる数がm, 割る数がnで，あまりを返す
 func mod(m int, n int) int {
 	if m < 0 {
 		return m%n + n
@@ -100,6 +101,14 @@ func GetNextNInt(n int) []int {
 	a := make([]int, n)
 	for i := 0; i < n; i++ {
 		a[i] = fastio.GetNextInt()
+	}
+	return a
+}
+
+func GetNextNFloat64(n int) []float64 {
+	a := make([]float64, n)
+	for i := 0; i < n; i++ {
+		a[i] = fastio.GetNextFloat64()
 	}
 	return a
 }
