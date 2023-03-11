@@ -97,20 +97,10 @@ func binarySearch(array []int, key int) int {
 	return ok
 }
 
-// 配列の要素の始まりが1のときは下のように書く
-// a = append([]int{0}, a...)
 func GetNextNInt(n int) []int {
 	a := make([]int, n)
 	for i := 0; i < n; i++ {
 		a[i] = fastio.GetNextInt()
-	}
-	return a
-}
-
-func GetNextNMInt(n int, m int) [][]int {
-	a := make([][]int, n)
-	for i := 0; i < n; i++ {
-		a[i] = GetNextNInt(m)
 	}
 	return a
 }
@@ -194,5 +184,29 @@ func main() {
 }
 
 func solve() {
+	n := fastio.GetNextInt()
+	a := GetNextNInt(n)
+	a = append([]int{0}, a...)
+	isCalled := make([]bool, n+1)
 
+	for i := 1; i < len(a); i++ {
+		if !isCalled[i] {
+			isCalled[a[i]] = true
+		}
+	}
+
+	num := 0
+	for i := 1; i < len(isCalled); i++ {
+		if !isCalled[i] {
+			num++
+		}
+	}
+
+	fastio.Println(num)
+	for i := 1; i < len(isCalled); i++ {
+		if !isCalled[i] {
+			fastio.Printf("%d ", i)
+		}
+	}
+	fastio.Println()
 }

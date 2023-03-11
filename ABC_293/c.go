@@ -97,8 +97,6 @@ func binarySearch(array []int, key int) int {
 	return ok
 }
 
-// 配列の要素の始まりが1のときは下のように書く
-// a = append([]int{0}, a...)
 func GetNextNInt(n int) []int {
 	a := make([]int, n)
 	for i := 0; i < n; i++ {
