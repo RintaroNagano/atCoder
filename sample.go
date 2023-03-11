@@ -251,6 +251,18 @@ func (i *FastIo) getGraph(n int) map[int][]int {
 		g[b] = append(g[b], a)
 	}
 	return g
+func swap(s string, a int, b int) string {
+	ss := strings.Split(s, "")
+	tmp := ss[a]
+	ss[a] = ss[b]
+	ss[b] = tmp
+
+	ans := ""
+	for _, v := range ss {
+		ans += v
+	}
+
+	return ans
 }
 
 func main() {
