@@ -131,16 +131,16 @@ func GetNextNString(n int) []string {
 	return s
 }
 
-func GetNextNchars(n int) []byte {
+func GetNextLineChars() []byte {
 	s := fastio.Text()
 	b := []byte(s)
 
 	return b
 }
 
-func GetNextNMchar(n, m int) [][]byte {
+func GetNextNLineChars(n int) [][]byte {
 	bs := make([][]byte, n)
-	for i := 0; i < m; i++ {
+	for i := 0; i < n; i++ {
 		s := fastio.Text()
 		bs[i] = []byte(s)
 	}
