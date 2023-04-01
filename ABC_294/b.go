@@ -147,11 +147,6 @@ func GetNextNMchar(n, m int) [][]byte {
 	return bs
 }
 
-func ByteToString(b byte) string {
-	s := string([]byte{b})
-	return s
-}
-
 func bitAllSearch() {
 	n := 3 // 独立な要素数
 
@@ -215,5 +210,21 @@ func main() {
 }
 
 func solve() {
+	h := fastio.GetNextInt()
+	w := fastio.GetNextInt()
 
+	a := GetNextNMInt(h, w)
+
+	for i := 0; i < h; i++ {
+		for j := 0; j < w; j++ {
+			if a[i][j] == 0 {
+				fastio.Print(".")
+			} else {
+				fastio.Print(string([]byte{byte('A' - 1 + a[i][j])}))
+			}
+		}
+		fastio.Println()
+	}
+
+	return
 }

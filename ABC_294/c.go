@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"sort"
 	"strconv"
 	"strings"
 )
@@ -147,11 +148,6 @@ func GetNextNMchar(n, m int) [][]byte {
 	return bs
 }
 
-func ByteToString(b byte) string {
-	s := string([]byte{b})
-	return s
-}
-
 func bitAllSearch() {
 	n := 3 // 独立な要素数
 
@@ -215,5 +211,28 @@ func main() {
 }
 
 func solve() {
+	n := fastio.GetNextInt()
+	m := fastio.GetNextInt()
+	a := GetNextNInt(n)
+	b := GetNextNInt(m)
 
+	c := append(a, b...)
+	sort.Slice(c, func(i, j int) bool {
+		return c[i] < c[j]
+	})
+
+	ma := make(map[int]int)
+	for i, v := range c {
+		ma[v] = i + 1
+	}
+
+	for _, v := range a {
+		fastio.Printf("%d ", ma[v])
+	}
+	fastio.Println()
+	for _, v := range b {
+		fastio.Printf("%d ", ma[v])
+	}
+	fastio.Println()
+	return
 }
