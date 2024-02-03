@@ -115,22 +115,6 @@ func GetNextNMInt(n int, m int) [][]int {
 	return a
 }
 
-func GetNextNInt64(n int) []int64 {
-	a := make([]int64, n)
-	for i := 0; i < n; i++ {
-		a[i] = fastio.GetNextInt64()
-	}
-	return a
-}
-
-func GetNextNMInt64(n int, m int) [][]int64 {
-	a := make([][]int64, n)
-	for i := 0; i < n; i++ {
-		a[i] = GetNextNInt64(m)
-	}
-	return a
-}
-
 func GetNextNFloat64(n int) []float64 {
 	a := make([]float64, n)
 	for i := 0; i < n; i++ {
@@ -220,18 +204,6 @@ func replace(s string, from string, to string) string {
 	return s
 }
 
-func (i *FastIo) getGraph(n int) map[int][]int {
-	g := map[int][]int{}
-
-	var a, b int
-	for i := 0; i < n; i++ {
-		a = fastio.GetNextInt()
-		b = fastio.GetNextInt()
-		g[a] = append(g[a], b)
-	}
-	return g
-}
-
 func main() {
 	fp := os.Stdin
 	wfp := os.Stdout
@@ -243,5 +215,46 @@ func main() {
 }
 
 func solve() {
+	n1 := fastio.GetNextInt()
+	n2 := fastio.GetNextInt()
+	m := fastio.GetNextInt()
 
+	g := map[int][]int{}
+
+	var a, b int
+	for i := 0; i < m; i++ {
+		a = fastio.GetNextInt()
+		b = fastio.GetNextInt()
+		g[a] = append(g[a], b)
+	}
+
+	// fastio.Println(n1, n2, m, g)
+
+}
+
+func member(n int, xs []int) bool {
+	for _, x := range xs {
+		if n == x {
+			return true
+		}
+	}
+	return false
+}
+
+func dfs(goal int, path []int) {
+	n := path[len(path)-1]
+	if n == goal {
+		fmt.Println(path)
+	} else {
+		for _, x := range adjacent[n] {
+			if !member(x, path) {
+				dfs(goal, append(path, x))
+			}
+		}
+	}
+}
+
+func depthFirstSearch(start, goal int) {
+	path := make([]int, 0, Size)
+	dfs(goal, append(path, start))
 }

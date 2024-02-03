@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"sort"
 	"strconv"
 	"strings"
 )
@@ -220,18 +221,6 @@ func replace(s string, from string, to string) string {
 	return s
 }
 
-func (i *FastIo) getGraph(n int) map[int][]int {
-	g := map[int][]int{}
-
-	var a, b int
-	for i := 0; i < n; i++ {
-		a = fastio.GetNextInt()
-		b = fastio.GetNextInt()
-		g[a] = append(g[a], b)
-	}
-	return g
-}
-
 func main() {
 	fp := os.Stdin
 	wfp := os.Stdout
@@ -243,5 +232,39 @@ func main() {
 }
 
 func solve() {
+	n := fastio.GetNextInt()
+	k := fastio.GetNextInt64()
 
+	ab := GetNextNMInt64(n, 2)
+	index := make([]int, n)
+
+	swallowSum := int64(0)
+	for i := 0; i < n; i++ {
+		swallowSum += ab[i][1]
+		index[i] = i
+	}
+
+	sort.Slice(index, func(i, j int) bool {
+		return ab[index[i]][0] < ab[index[j]][0]
+	})
+
+	if swallowSum <= k {
+		fastio.Println(1)
+		return
+	}
+
+	tmpDay := int64(0)
+	for i := 0; i < n; i++ {
+		tmpDay = ab[index[i]][0]
+		swallowSum -= ab[index[i]][1]
+		for i+1 < n && tmpDay == ab[index[i+1]][0] {
+			i++
+			swallowSum -= ab[index[i]][1]
+		}
+
+		if swallowSum <= k {
+			fastio.Println(tmpDay + 1)
+			return
+		}
+	}
 }

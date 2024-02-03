@@ -115,22 +115,6 @@ func GetNextNMInt(n int, m int) [][]int {
 	return a
 }
 
-func GetNextNInt64(n int) []int64 {
-	a := make([]int64, n)
-	for i := 0; i < n; i++ {
-		a[i] = fastio.GetNextInt64()
-	}
-	return a
-}
-
-func GetNextNMInt64(n int, m int) [][]int64 {
-	a := make([][]int64, n)
-	for i := 0; i < n; i++ {
-		a[i] = GetNextNInt64(m)
-	}
-	return a
-}
-
 func GetNextNFloat64(n int) []float64 {
 	a := make([]float64, n)
 	for i := 0; i < n; i++ {
@@ -220,18 +204,6 @@ func replace(s string, from string, to string) string {
 	return s
 }
 
-func (i *FastIo) getGraph(n int) map[int][]int {
-	g := map[int][]int{}
-
-	var a, b int
-	for i := 0; i < n; i++ {
-		a = fastio.GetNextInt()
-		b = fastio.GetNextInt()
-		g[a] = append(g[a], b)
-	}
-	return g
-}
-
 func main() {
 	fp := os.Stdin
 	wfp := os.Stdout
@@ -243,5 +215,36 @@ func main() {
 }
 
 func solve() {
+	n := fastio.GetNextInt()
+	a := GetNextNLineChars(n)
 
+	var b [100][100]byte
+
+	for i := 0; i < n; i++ {
+		for j := 0; j < n; j++ {
+			b[i][j] = a[i][j]
+		}
+	}
+
+	for i := 1; i < n; i++ {
+		b[0][i] = a[0][i-1]
+	}
+	b[0][0] = a[1][0]
+
+	for i := 1; i < n; i++ {
+		b[i][n-1] = a[i-1][n-1]
+	}
+	for i := (n - 1) - 1; i >= 0; i-- {
+		b[n-1][i] = a[n-1][i+1]
+	}
+	for i := (n - 1) - 1; i >= 0; i-- {
+		b[i][0] = a[i+1][0]
+	}
+
+	for i := 0; i < n; i++ {
+		for j := 0; j < n; j++ {
+			fastio.Printf("%c", b[i][j])
+		}
+		fastio.Println()
+	}
 }
