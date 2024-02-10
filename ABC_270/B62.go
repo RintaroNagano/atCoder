@@ -220,19 +220,6 @@ func replace(s string, from string, to string) string {
 	return s
 }
 
-// dfsによって，グラフが連結かどうか探索する．
-func dfs(crt int, g map[int][]int, visited []bool, prev map[int]int) {
-	visited[crt] = true
-	for i := 0; i < len(g[crt]); i++ {
-		next := g[crt][i]
-		if !visited[next] {
-			prev[next] = crt
-			dfs(next, g, visited, prev)
-		}
-	}
-	return
-}
-
 func (i *FastIo) getGraph(n int) map[int][]int {
 	g := map[int][]int{}
 
@@ -256,5 +243,56 @@ func main() {
 }
 
 func solve() {
+	n := fastio.GetNextInt()
+	x := fastio.GetNextInt()
+	y := fastio.GetNextInt()
 
+	g := make(map[int][]int)
+	for i := 0; i < n-1; i++ {
+		a := fastio.GetNextInt()
+		b := fastio.GetNextInt()
+
+		g[a] = append(g[a], b)
+		g[b] = append(g[b], a)
+	}
+
+	target := y
+	prev := make(map[int]int)
+	visited := make([]bool, 300009)
+	dfs(x, g, visited, prev)
+
+	var ans []int
+	vertex := target
+	for {
+		ans = append(ans, vertex)
+		if p, ok := prev[vertex]; ok {
+			vertex = p
+		} else {
+			break
+		}
+	}
+	fastio.Print(ans[len(ans)-1])
+	for i := len(ans) - 2; i >= 0; i-- {
+		fastio.Printf(" %d", ans[i])
+	}
+	fastio.Print("\n")
+
+	for i := 1; i <= n; i++ {
+		if !visited[i] {
+			return
+		}
+	}
+}
+
+// dfsによって，グラフが連結かどうか探索する．
+func dfs(crt int, g map[int][]int, visited []bool, prev map[int]int) {
+	visited[crt] = true
+	for i := 0; i < len(g[crt]); i++ {
+		next := g[crt][i]
+		if !visited[next] {
+			prev[next] = crt
+			dfs(next, g, visited, prev)
+		}
+	}
+	return
 }
