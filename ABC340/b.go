@@ -46,13 +46,6 @@ func max(x int, y int) int {
 	return y
 }
 
-func min(x int, y int) int {
-	if x < y {
-		return x
-	}
-	return y
-}
-
 // 割られる数がm, 割る数がnで，あまりを返す
 func mod(m int, n int) int {
 	if m < 0 {
@@ -248,7 +241,6 @@ func (i *FastIo) getGraph(n int) map[int][]int {
 		a = fastio.GetNextInt()
 		b = fastio.GetNextInt()
 		g[a] = append(g[a], b)
-		g[b] = append(g[b], a)
 	}
 	return g
 }
@@ -264,5 +256,22 @@ func main() {
 }
 
 func solve() {
+	q := fastio.GetNextInt()
+
+	var q1 int
+	var q2 int
+
+	a := make([]int, 110)
+	for i := 0; i < q; i++ {
+		q1 = fastio.GetNextInt()
+		q2 = fastio.GetNextInt()
+
+		if q1 == 1 {
+			a = append(a, q2)
+		}
+		if q1 == 2 {
+			fastio.Println(a[len(a)-q2])
+		}
+	}
 
 }

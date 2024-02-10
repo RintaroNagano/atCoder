@@ -244,10 +244,11 @@ func (i *FastIo) getGraph(n int) map[int][]int {
 	g := map[int][]int{}
 
 	var a, b int
-	for i := 0; i < n; i++ {
+	for i := 1; i < n+1; i++ {
+
 		a = fastio.GetNextInt()
+		g[i] = append(g[i], a)
 		b = fastio.GetNextInt()
-		g[a] = append(g[a], b)
 		g[b] = append(g[b], a)
 	}
 	return g
@@ -264,5 +265,8 @@ func main() {
 }
 
 func solve() {
+	n := fastio.GetNextInt()
+
+	g := fastio.getGraph(n)
 
 }

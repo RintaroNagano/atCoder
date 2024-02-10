@@ -46,13 +46,6 @@ func max(x int, y int) int {
 	return y
 }
 
-func min(x int, y int) int {
-	if x < y {
-		return x
-	}
-	return y
-}
-
 // 割られる数がm, 割る数がnで，あまりを返す
 func mod(m int, n int) int {
 	if m < 0 {
@@ -248,7 +241,6 @@ func (i *FastIo) getGraph(n int) map[int][]int {
 		a = fastio.GetNextInt()
 		b = fastio.GetNextInt()
 		g[a] = append(g[a], b)
-		g[b] = append(g[b], a)
 	}
 	return g
 }
@@ -264,5 +256,63 @@ func main() {
 }
 
 func solve() {
+	n := fastio.GetNextInt64()
+	var blackbord []int64
+	blackbord = append(blackbord, n)
 
+	cache := make(map[int64]int64, 0)
+	cache[0] = 0
+	cache[1] = 0
+	cache[2] = 2
+
+	var ans int64
+
+	sumCalc(blackbord, cache, &ans)
+	fastio.Println(ans)
+}
+
+func sumCalc(blackbord []int64, cache map[int64]int64, ans *int64) {
+	// 黒板の最後の文字を消す
+	target := blackbord[len(blackbord)-1]
+	blackbord = blackbord[:len(blackbord)-1]
+	*ans += target
+
+	// 追加する値の計算
+	reminder := target % 2
+	quotient := target / 2
+	var new_large, new_small int64
+	new_large = quotient + reminder
+	new_small = quotient
+
+	// 追加する値の答えを両方知っているとき，この値の答えも知る
+	if vLarge, okLarge := cache[new_large]; okLarge {
+		if vSmall, okSmall := cache[new_small]; okSmall {
+			cache[target] = vLarge + vSmall + target
+			*ans += vLarge + vSmall
+			// fastio.Println("brackbord: ", blackbord, "target: ", target, "new_large: ", new_large, "new_small", new_small, "ans: ", *ans)
+			if len(blackbord) > 0 {
+				sumCalc(blackbord, cache, ans)
+			}
+			return
+		}
+	}
+
+	// 値を知っているとき，計算結果を加算する．値を知らず，2以上の場合は黒板に書く．値を知らず，2以下の場合は書かない
+	if v, ok := cache[new_large]; ok {
+		*ans += v
+	} else if new_large >= 2 {
+		blackbord = append(blackbord, new_large)
+	}
+	if v, ok := cache[new_small]; ok {
+		*ans += v
+	} else if new_small >= 2 {
+		blackbord = append(blackbord, new_small)
+	}
+
+	// fastio.Println("brackbord: ", blackbord, "target: ", target, "new_large: ", new_large, "new_small", new_small, "ans: ", *ans)
+
+	// まだ黒板に文字があるならもう一度繰り返す
+	if len(blackbord) > 0 {
+		sumCalc(blackbord, cache, ans)
+	}
 }
