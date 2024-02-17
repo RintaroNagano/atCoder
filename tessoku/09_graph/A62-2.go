@@ -2,7 +2,6 @@ package main
 
 import (
 	"bufio"
-	"container/heap"
 	"fmt"
 	"io"
 	"math"
@@ -43,13 +42,6 @@ func (i *FastIo) Println(x ...interface{})          { fmt.Fprintln(i.Writer, x..
 
 func max(x int, y int) int {
 	if x > y {
-		return x
-	}
-	return y
-}
-
-func min(x int, y int) int {
-	if x < y {
 		return x
 	}
 	return y
@@ -229,49 +221,16 @@ func replace(s string, from string, to string) string {
 	return s
 }
 
-func swap(s string, a int, b int) string {
-	ss := strings.Split(s, "")
-	tmp := ss[a]
-	ss[a] = ss[b]
-	ss[b] = tmp
+func (i *FastIo) getGraph(n int) map[int][]int {
+	g := map[int][]int{}
 
-	ans := ""
-	for _, v := range ss {
-		ans += v
+	var a, b int
+	for i := 0; i < n; i++ {
+		a = fastio.GetNextInt()
+		b = fastio.GetNextInt()
+		g[a] = append(g[a], b)
 	}
-
-	return ans
-}
-
-// 最大公約数 (GCD) を計算する関数
-func gcd(a, b int) int {
-	for b != 0 {
-		a, b = b, a%b
-	}
-	return a
-}
-
-// 最小公倍数 (LCM) を計算する関数
-func lcm(a, b int) int {
-	return a / gcd(a, b) * b
-}
-
-type grid struct {
-	grid [][]interface{}
-}
-
-func (g *grid) getGridValue(x, y int) (v interface{}) {
-	return g.grid[y][x]
-}
-
-func (g *grid) setGridValue(x, y int, v interface{}) {
-	g.grid[y][x] = v
-}
-
-func (g *grid) printGrid() {
-	for i := 0; i < len(g.grid); i++ {
-		fastio.Println(g.grid[i])
-	}
+	return g
 }
 
 type edge struct {
@@ -328,101 +287,6 @@ func (g *graph) dfs(crt int) {
 	return
 }
 
-// bfsでグラフ探索する．引数は探索開始頂点の番号．
-// 探索終了時，探索で訪れることのできた頂点はvisited=trueになり，distanceには開始頂点からの最短経路長が保存される．
-func (g *graph) bfs(crt int) {
-	var que []int
-	que = append(que, 1)
-	g.vertexs[1].distance = 0
-	g.vertexs[1].visited = true
-	var pos int
-	for len(que) != 0 {
-		pos = que[0]
-		que = que[1:]
-		for i := 0; i < len(g.edges[pos]); i++ {
-			nextEdge := g.edges[pos][i]
-			nextNum := nextEdge.to
-			nextVertex := g.vertexs[nextNum]
-			if nextVertex.visited {
-				continue
-			}
-			g.vertexs[nextNum].visited = true
-			g.vertexs[nextNum].distance = g.vertexs[pos].distance + nextEdge.cost
-
-			que = append(que, nextVertex.number)
-		}
-	}
-}
-
-func (g *graph) dijkstra(crt int) {
-	g.vertexs[1].distance = 0
-
-	pq := priority_queue{}
-	pq.Push_Vertex(vertex{
-		visited:  false,
-		number:   1,
-		distance: 0,
-	})
-
-	for !pq.Empty() {
-		fastio.Println("pq: ", pq)
-		pos, err := pq.Pop_Vertex()
-		if err != nil {
-			panic(err)
-		}
-
-		if g.vertexs[pos.number].visited {
-			continue
-		}
-		g.vertexs[pos.number].visited = true
-		g.vertexs[pos.number].distance = pos.distance
-
-		for i := 0; i < len(g.edges[pos.number]); i++ {
-			nextEdge := g.edges[pos.number][i]
-			next := nextEdge.to
-			cost := nextEdge.cost
-			if g.vertexs[next].distance > pos.distance+cost {
-				pq.Push_Vertex(vertex{
-					visited:  false,
-					number:   next,
-					distance: pos.distance + cost,
-				})
-			}
-		}
-	}
-}
-
-type priority_queue []vertex
-
-func (pq priority_queue) Len() int           { return len(pq) }
-func (pq priority_queue) Empty() bool        { return len(pq) == 0 }
-func (pq priority_queue) Less(i, j int) bool { return pq[i].distance < pq[j].distance }
-func (pq priority_queue) Swap(i, j int)      { pq[i], pq[j] = pq[j], pq[i] }
-
-func (pq *priority_queue) Push(x any) {
-	*pq = append(*pq, x.(vertex))
-}
-
-func (pq *priority_queue) Push_Vertex(v vertex) {
-	heap.Push(pq, v)
-}
-
-func (pq *priority_queue) Pop() any {
-	old := *pq
-	n := len(old)
-	x := old[n-1]
-	*pq = old[0 : n-1]
-	return x
-}
-
-func (pq *priority_queue) Pop_Vertex() (v vertex, err error) {
-	v, ok := heap.Pop(pq).(vertex)
-	if !ok {
-		err = fmt.Errorf("TypeError: priority_queue内部のデータが，vertex型ではありません")
-	}
-	return v, err
-}
-
 func main() {
 	fp := os.Stdin
 	wfp := os.Stdout
@@ -434,5 +298,25 @@ func main() {
 }
 
 func solve() {
+	n := fastio.GetNextInt()
+	m := fastio.GetNextInt()
 
+	g := newGraph(n)
+	for i := 0; i < m; i++ {
+		a := fastio.GetNextInt()
+		b := fastio.GetNextInt()
+
+		g.appendEdge(a, b, 1)
+		g.appendEdge(b, a, 1)
+	}
+
+	g.dfs(1)
+
+	for i := 1; i <= n; i++ {
+		if !g.vertexs[i].visited {
+			fastio.Println("not Connected")
+			return
+		}
+	}
+	fastio.Println("Connected")
 }

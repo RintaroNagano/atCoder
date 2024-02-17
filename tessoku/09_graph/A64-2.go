@@ -268,12 +268,6 @@ func (g *grid) setGridValue(x, y int, v interface{}) {
 	g.grid[y][x] = v
 }
 
-func (g *grid) printGrid() {
-	for i := 0; i < len(g.grid); i++ {
-		fastio.Println(g.grid[i])
-	}
-}
-
 type edge struct {
 	to   int
 	cost int
@@ -434,5 +428,26 @@ func main() {
 }
 
 func solve() {
+	n := fastio.GetNextInt()
+	m := fastio.GetNextInt()
 
+	g := newGraph(n)
+
+	var a, b, w int
+	for i := 0; i < m; i++ {
+		a = fastio.GetNextInt()
+		b = fastio.GetNextInt()
+		w = fastio.GetNextInt()
+		g.appendEdge(a, b, w)
+		g.appendEdge(b, a, w)
+	}
+
+	g.dijkstra(n)
+
+	for i := 1; i <= n; i++ {
+		if g.vertexs[i].distance == math.MaxInt {
+			g.vertexs[i].distance = -1
+		}
+		fastio.Println(g.vertexs[i])
+	}
 }

@@ -229,6 +229,31 @@ func replace(s string, from string, to string) string {
 	return s
 }
 
+// dfsによって，グラフが連結かどうか探索する．
+func dfs(crt int, g map[int][]int, visited []bool, prev map[int]int) {
+	visited[crt] = true
+	for i := 0; i < len(g[crt]); i++ {
+		next := g[crt][i]
+		if !visited[next] {
+			prev[next] = crt
+			dfs(next, g, visited, prev)
+		}
+	}
+	return
+}
+
+func (i *FastIo) getGraph(n int) map[int][]int {
+	g := map[int][]int{}
+
+	var a, b int
+	for i := 0; i < n; i++ {
+		a = fastio.GetNextInt()
+		b = fastio.GetNextInt()
+		g[a] = append(g[a], b)
+		g[b] = append(g[b], a)
+	}
+	return g
+}
 func swap(s string, a int, b int) string {
 	ss := strings.Split(s, "")
 	tmp := ss[a]
@@ -268,161 +293,6 @@ func (g *grid) setGridValue(x, y int, v interface{}) {
 	g.grid[y][x] = v
 }
 
-func (g *grid) printGrid() {
-	for i := 0; i < len(g.grid); i++ {
-		fastio.Println(g.grid[i])
-	}
-}
-
-type edge struct {
-	to   int
-	cost int
-}
-
-type vertex struct {
-	visited  bool // 頂点が処理済みかどうか
-	number   int  // 頂点番号
-	distance int  // (ある点からの)最短距離
-}
-
-type graph struct {
-	edges   [][]edge
-	vertexs []vertex
-}
-
-func newGraph(n int) graph {
-	g := graph{
-		edges:   make([][]edge, n+1),
-		vertexs: make([]vertex, n+1),
-	}
-	for i := 0; i <= n; i++ {
-		g.vertexs[i] = vertex{
-			visited:  false,
-			number:   i,
-			distance: math.MaxInt,
-		}
-	}
-	return g
-}
-
-// 辺をグラフに追加する．重み無しグラフならcost = 1にする．
-func (g *graph) appendEdge(from, to, cost int) {
-	g.edges[from] = append(g.edges[from], edge{
-		to:   to,
-		cost: cost,
-	})
-}
-
-// dfsでグラフ探索する．引数は探索開始頂点の番号.
-// 探索終了時，探索で訪れることができた頂点はvisited=trueになる．
-func (g *graph) dfs(crt int) {
-	g.vertexs[crt].visited = true
-
-	for i := 0; i < len(g.edges[crt]); i++ {
-		next := g.edges[crt][i].to
-
-		if !g.vertexs[next].visited {
-			g.dfs(next)
-		}
-	}
-	return
-}
-
-// bfsでグラフ探索する．引数は探索開始頂点の番号．
-// 探索終了時，探索で訪れることのできた頂点はvisited=trueになり，distanceには開始頂点からの最短経路長が保存される．
-func (g *graph) bfs(crt int) {
-	var que []int
-	que = append(que, 1)
-	g.vertexs[1].distance = 0
-	g.vertexs[1].visited = true
-	var pos int
-	for len(que) != 0 {
-		pos = que[0]
-		que = que[1:]
-		for i := 0; i < len(g.edges[pos]); i++ {
-			nextEdge := g.edges[pos][i]
-			nextNum := nextEdge.to
-			nextVertex := g.vertexs[nextNum]
-			if nextVertex.visited {
-				continue
-			}
-			g.vertexs[nextNum].visited = true
-			g.vertexs[nextNum].distance = g.vertexs[pos].distance + nextEdge.cost
-
-			que = append(que, nextVertex.number)
-		}
-	}
-}
-
-func (g *graph) dijkstra(crt int) {
-	g.vertexs[1].distance = 0
-
-	pq := priority_queue{}
-	pq.Push_Vertex(vertex{
-		visited:  false,
-		number:   1,
-		distance: 0,
-	})
-
-	for !pq.Empty() {
-		fastio.Println("pq: ", pq)
-		pos, err := pq.Pop_Vertex()
-		if err != nil {
-			panic(err)
-		}
-
-		if g.vertexs[pos.number].visited {
-			continue
-		}
-		g.vertexs[pos.number].visited = true
-		g.vertexs[pos.number].distance = pos.distance
-
-		for i := 0; i < len(g.edges[pos.number]); i++ {
-			nextEdge := g.edges[pos.number][i]
-			next := nextEdge.to
-			cost := nextEdge.cost
-			if g.vertexs[next].distance > pos.distance+cost {
-				pq.Push_Vertex(vertex{
-					visited:  false,
-					number:   next,
-					distance: pos.distance + cost,
-				})
-			}
-		}
-	}
-}
-
-type priority_queue []vertex
-
-func (pq priority_queue) Len() int           { return len(pq) }
-func (pq priority_queue) Empty() bool        { return len(pq) == 0 }
-func (pq priority_queue) Less(i, j int) bool { return pq[i].distance < pq[j].distance }
-func (pq priority_queue) Swap(i, j int)      { pq[i], pq[j] = pq[j], pq[i] }
-
-func (pq *priority_queue) Push(x any) {
-	*pq = append(*pq, x.(vertex))
-}
-
-func (pq *priority_queue) Push_Vertex(v vertex) {
-	heap.Push(pq, v)
-}
-
-func (pq *priority_queue) Pop() any {
-	old := *pq
-	n := len(old)
-	x := old[n-1]
-	*pq = old[0 : n-1]
-	return x
-}
-
-func (pq *priority_queue) Pop_Vertex() (v vertex, err error) {
-	v, ok := heap.Pop(pq).(vertex)
-	if !ok {
-		err = fmt.Errorf("TypeError: priority_queue内部のデータが，vertex型ではありません")
-	}
-	return v, err
-}
-
 func main() {
 	fp := os.Stdin
 	wfp := os.Stdout
@@ -433,6 +303,113 @@ func main() {
 	solve()
 }
 
-func solve() {
+type priority_queue []vertex
 
+func (pq priority_queue) Len() int           { return len(pq) }
+func (pq priority_queue) Empty() bool        { return len(pq) == 0 }
+func (pq priority_queue) Less(i, j int) bool { return pq[i].distance < pq[j].distance }
+func (pq priority_queue) Swap(i, j int)      { pq[i], pq[j] = pq[j], pq[i] }
+func (pq *priority_queue) Push(x any) {
+	*pq = append(*pq, x.(vertex))
+}
+
+func (pq *priority_queue) Pop() any {
+	old := *pq
+	n := len(old)
+	x := old[n-1]
+	*pq = old[0 : n-1]
+	return x
+}
+
+func (pq *priority_queue) Push_Vertex(v vertex) {
+	heap.Push(pq, v)
+}
+
+func (pq *priority_queue) Pop_Vertex() (v vertex, err error) {
+	v, ok := heap.Pop(pq).(vertex)
+	if !ok {
+		err = fmt.Errorf("TypeError: priority_queue内部のデータが，vertex型ではありません")
+	}
+	return v, err
+}
+
+type vertex struct {
+	vertex   int
+	distance int
+}
+
+type edge struct {
+	to     int
+	weight int
+}
+
+func solve() {
+	n := fastio.GetNextInt()
+	m := fastio.GetNextInt()
+
+	g := map[int][]edge{}
+
+	var a, b, w int
+	for i := 0; i < m; i++ {
+		a = fastio.GetNextInt()
+		b = fastio.GetNextInt()
+		w = fastio.GetNextInt()
+		g[a] = append(g[a],
+			edge{
+				to:     b,
+				weight: w,
+			})
+		g[b] = append(g[b],
+			edge{
+				to:     a,
+				weight: w,
+			})
+	}
+
+	cur := make([]int, m+1)
+	for i := 0; i < len(cur); i++ {
+		cur[i] = math.MaxInt
+	}
+	decided := make([]bool, n+1)
+
+	cur[1] = 0
+	que := priority_queue{}
+	que.Push(vertex{
+		vertex:   1,
+		distance: cur[1],
+	})
+
+	for !que.Empty() {
+		fastio.Println("que: ", que)
+		fastio.Println("decided", decided)
+		pos, err := que.Pop_Vertex()
+		if err != nil {
+			panic(err)
+		}
+		if decided[pos.vertex] {
+			continue
+		}
+
+		decided[pos.vertex] = true
+
+		for i := 0; i < len(g[pos.vertex]); i++ {
+			var nex, weight int
+			nex = g[pos.vertex][i].to
+			weight = g[pos.vertex][i].weight
+			if cur[nex] > cur[pos.vertex]+weight {
+				cur[nex] = cur[pos.vertex] + weight
+				que.Push_Vertex(vertex{
+					vertex:   nex,
+					distance: cur[nex],
+				})
+			}
+		}
+	}
+
+	for i := 1; i <= n; i++ {
+		if cur[i] == math.MaxInt {
+			cur[i] = -1
+		}
+		fastio.Println(cur[i])
+	}
 }
